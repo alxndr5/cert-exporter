@@ -1,0 +1,40 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ .Release.Name }}-node
+  labels: {{- .Values.prometheus.labels | toYaml | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-node
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  podMetricsEndpoints:
+  - path: /metrics
+    port: web
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-remote
+  labels: {{- .Values.prometheus.labels | toYaml | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-remote
+  endpoints:
+  - port: web
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-kube
+  labels: {{- .Values.prometheus.labels | toYaml | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-kube
+  endpoints:
+  - port: web

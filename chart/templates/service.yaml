@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-node
+  labels:
+    app: {{ .Release.Name }}-node
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}-node
+  ports:
+    - name: web
+      port: 9000
+      targetPort: 9000
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-remote
+  labels:
+    app: {{ .Release.Name }}-remote
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}-remote
+  ports:
+    - name: web
+      port: 9000
+      targetPort: 9000
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-kube
+  labels:
+    app: {{ .Release.Name }}-kube
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}-kube
+  ports:
+    - name: web
+      port: 9000
+      targetPort: 9000
+      protocol: TCP

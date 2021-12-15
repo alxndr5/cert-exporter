@@ -1,0 +1,4 @@
+local:
+    - /etc/ssl/certs/
+remote:
+    - https://google.com

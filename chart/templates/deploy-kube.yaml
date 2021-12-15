@@ -1,0 +1,29 @@
+{{ if .Values.kubeCertExporter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-kube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-kube
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-kube
+    spec:
+      serviceAccountName: {{ .Release.Name }}
+      imagePullSecrets: {{- .Values.image.pullSecrets | toYaml | nindent 8 }}
+      containers:
+        - name: app
+          image: "{{ .Values.image.url }}:{{ .Values.image.tag }}"
+          command: ["python", "-u", "exporter.py", "kubernetes"]
+          ports:
+            - name: web
+              containerPort: 9000
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: web
+{{ end }}
