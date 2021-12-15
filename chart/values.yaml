@@ -1,0 +1,31 @@
+---
+image:
+  url: 'nourl'
+  tag: 'notag'
+  pullSecrets: []
+
+kubeCertExporter:
+  enabled: true
+
+remoteCertExporter:
+  enabled: true
+
+nodeCertExporter:
+  enabled: true
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
+      operator: Exists
+
+prometheus:
+  labels:
+    app: kube-prometheus-stack
+    release: kube-prometheus-stack
+  alert: 98
+
+config:
+  update_period: 300
+  local:
+    - /etc/kubernetes/pki
+  remote:
+    - https://google.com

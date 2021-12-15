@@ -1,0 +1,24 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels: {{- .Values.prometheus.labels | toYaml | nindent 4 }}
+  name: {{ .Release.Name }}
+spec:
+  groups:
+  - name: {{ .Release.Name }}
+    rules:
+    - alert: CertificateExpiration
+      expr: certexporter >= {{ .Values.prometheus.alert }}
+      annotations:
+        summary: Certificate expiration >= {{ .Values.prometheus.alert }}%
+        description: Certificate cn={{ "{{" }} $labels.cn }} location={{ "{{" }} $labels.location }} expiration percent >= {{ .Values.prometheus.alert }}%
+      labels:
+        severity:  warning
+    - alert: CertificateExpired
+      expr: certexporter == 100
+      annotations:
+        summary: Certificate expired
+        description: Certificate cn={{ "{{" }} $labels.cn }} location={{ "{{" }} $labels.location }} expired
+      labels:
+        severity:  warning

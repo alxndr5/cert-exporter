@@ -1,0 +1,44 @@
+{{ if .Values.nodeCertExporter.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Release.Name }}-node
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-node
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-node
+    spec:
+      imagePullSecrets: {{- .Values.image.pullSecrets | toYaml | nindent 8 }}
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ required "image.url is not set" .Values.image.url }}:{{ required "image.tag is not set" .Values.image.tag }}"
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: web
+          ports:
+            - name: web
+              containerPort: 9000
+          volumeMounts:
+            - name: exporter-yaml
+              mountPath: /app/exporter.yaml
+              subPath: exporter.yaml
+            {{- range .Values.config.local }}
+            - name: {{ regexReplaceAll "/" . "-" | trimPrefix "-" }}
+              mountPath: {{ . }}
+            {{- end }}
+      volumes:
+        - name: exporter-yaml
+          configMap:
+            name: {{ .Release.Name }}
+        {{- range .Values.config.local }}
+        - name: {{ regexReplaceAll "/" . "-" | trimPrefix "-" }}
+          hostPath:
+            path: {{ . }}
+        {{- end }}
+      tolerations: {{- .Values.nodeCertExporter.tolerations | toYaml | nindent 8 }}
+{{ end }}

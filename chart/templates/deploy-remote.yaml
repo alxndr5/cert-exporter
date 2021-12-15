@@ -1,0 +1,36 @@
+{{ if .Values.remoteCertExporter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-remote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-remote
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-remote
+    spec:
+      imagePullSecrets: {{- .Values.image.pullSecrets | toYaml | nindent 8 }}
+      containers:
+        - name: app
+          image: "{{ .Values.image.url }}:{{ .Values.image.tag }}"
+          command: ["python", "-u", "exporter.py", "remote"]
+          ports:
+            - name: web
+              containerPort: 9000
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: web
+          volumeMounts:
+            - name: exporter-yaml
+              mountPath: /app/exporter.yaml
+              subPath: exporter.yaml
+      volumes:
+        - name: exporter-yaml
+          configMap:
+            name: {{ .Release.Name }}
+{{ end }}
