@@ -26,4 +26,5 @@ spec:
             httpGet:
               path: /liveness
               port: web
+          resources: {{ .Values.image.resources | toYaml | nindent 12 }}
 {{ end }}

@@ -3,6 +3,7 @@ image:
   url: 'nourl'
   tag: 'notag'
   pullSecrets: []
+  resources: {}
 
 kubeCertExporter:
   enabled: true
