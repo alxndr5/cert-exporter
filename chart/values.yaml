@@ -3,16 +3,18 @@ image:
   url: 'nourl'
   tag: 'notag'
   pullSecrets: []
-  resources: {}
 
 kubeCertExporter:
   enabled: true
+  resources: {}
 
 remoteCertExporter:
   enabled: true
+  resources: {}
 
 nodeCertExporter:
   enabled: true
+  resources: {}
   tolerations:
     - key: node-role.kubernetes.io/master
       effect: NoSchedule

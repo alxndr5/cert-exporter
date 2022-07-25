@@ -29,7 +29,7 @@ spec:
             - name: exporter-yaml
               mountPath: /app/exporter.yaml
               subPath: exporter.yaml
-          resources: {{ .Values.image.resources | toYaml | nindent 12 }}
+          resources: {{ .Values.remoteCertExporter.resources | toYaml | nindent 12 }}
       volumes:
         - name: exporter-yaml
           configMap:
