@@ -31,6 +31,7 @@ spec:
             - name: {{ regexReplaceAll "/" . "-" | trimPrefix "-" }}
               mountPath: {{ . }}
             {{- end }}
+          resources: {{ .Values.image.resources | toYaml | nindent 12 }}
       volumes:
         - name: exporter-yaml
           configMap:
