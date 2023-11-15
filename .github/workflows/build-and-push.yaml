@@ -44,3 +44,8 @@ jobs:
           file: Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+      
+      - name: Build and push Helm chart
+        run: |
+          helm package chart
+          helm push cert-exporter-$(grep version chart/Chart.yaml | sed 's/^.*: //').tgz oci://ghcr.io/alxndr5/cert-exporter
